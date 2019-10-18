@@ -20,97 +20,103 @@
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
 #include <networktables/NetworkTableInstance.h>
-WPI_TalonSRX * FrontL;
-WPI_TalonSRX * FrontR;
-WPI_TalonSRX * BackL; 
-WPI_TalonSRX * BackR;
-frc::DifferentialDrive * _diffDrive;
+WPI_TalonSRX * FrontLDrive;
+WPI_TalonSRX * FrontRDrive;
+WPI_TalonSRX * BackLDrive; 
+WPI_TalonSRX * BackRDrive;
+
+WPI_TalonSRX * FrontLTurn;
+WPI_TalonSRX * FrontRTurn;
+WPI_TalonSRX * BackLTurn; 
+WPI_TalonSRX * BackRTurn;
 DriveBase::DriveBase() : Subsystem("DriveBase") {
 
 }
 
 void DriveBase::DriveBaseInit() {
 initialized = true;
-		FrontL = new WPI_TalonSRX (frontLeftDrive);
-		FrontR = new WPI_TalonSRX (frontRightDrive);
-		BackL = new WPI_TalonSRX (backLeftDrive);
-		BackR = new WPI_TalonSRX (backRightDrive);
-		_diffDrive = new frc::DifferentialDrive (*FrontL, *FrontR);
+		FrontLDrive = new WPI_TalonSRX (frontLeftDrive);
+		FrontRDrive = new WPI_TalonSRX (frontRightDrive);
+		BackLDrive = new WPI_TalonSRX (backLeftDrive);
+		BackRDrive = new WPI_TalonSRX (backRightDrive);
+		FrontLTurn = new WPI_TalonSRX (frontLeftTurn);
+		FrontRTurn = new WPI_TalonSRX (frontRightTurn);
+		BackLTurn = new WPI_TalonSRX (backLeftTurn);
+		BackRTurn = new WPI_TalonSRX (backRightTurn);
+		
+		FrontRDrive->ConfigFactoryDefault();
+		FrontLDrive->ConfigFactoryDefault();
+		BackRDrive->ConfigFactoryDefault();
+		BackLDrive->ConfigFactoryDefault();
 
-		FrontR->ConfigFactoryDefault();
-		FrontL->ConfigFactoryDefault();
-		BackR->ConfigFactoryDefault();
-		BackL->ConfigFactoryDefault();
+		FrontRDrive->SetInverted(true);
+		FrontLDrive->SetInverted(false);
+		BackRDrive->SetInverted(true);
+		BackLDrive->SetInverted(false);
 
-		FrontR->SetInverted(true);
-		FrontL->SetInverted(false);
-		BackR->SetInverted(true);
-		BackL->SetInverted(false);
+		FrontRDrive->ConfigPeakCurrentLimit(50,0);
+		FrontLDrive->ConfigPeakCurrentLimit(50,0);
+		BackRDrive->ConfigPeakCurrentLimit(50,0);
+		BackLDrive->ConfigPeakCurrentLimit(50,0);
 
-		FrontR->ConfigPeakCurrentLimit(50,0);
-		FrontL->ConfigPeakCurrentLimit(50,0);
-		BackR->ConfigPeakCurrentLimit(50,0);
-		BackL->ConfigPeakCurrentLimit(50,0);
+		FrontRDrive->ConfigPeakCurrentDuration(1000,0);
+		FrontLDrive->ConfigPeakCurrentDuration(1000,0);
+		BackRDrive->ConfigPeakCurrentDuration(1000,0);
+		BackLDrive->ConfigPeakCurrentDuration(1000,0);
 
-		FrontR->ConfigPeakCurrentDuration(1000,0);
-		FrontL->ConfigPeakCurrentDuration(1000,0);
-		BackR->ConfigPeakCurrentDuration(1000,0);
-		BackL->ConfigPeakCurrentDuration(1000,0);
+		FrontLDrive->ConfigOpenloopRamp(RampTime, 0);
+    	FrontRDrive->ConfigOpenloopRamp(RampTime, 0);
+   		BackLDrive->ConfigOpenloopRamp(RampTime, 0);
+    	BackRDrive->ConfigOpenloopRamp(RampTime, 0);
 
-		FrontL->ConfigOpenloopRamp(RampTime, 0);
-    	FrontR->ConfigOpenloopRamp(RampTime, 0);
-   		BackL->ConfigOpenloopRamp(RampTime, 0);
-    	BackR->ConfigOpenloopRamp(RampTime, 0);
+		FrontRDrive->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
+		FrontLDrive->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
 
-		FrontR->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
-		FrontL->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
-
-		FrontR->EnableCurrentLimit(true);
-		FrontL->EnableCurrentLimit(true);
-		BackR->EnableCurrentLimit(true);
-		BackL->EnableCurrentLimit(true);
+		FrontRDrive->EnableCurrentLimit(true);
+		FrontLDrive->EnableCurrentLimit(true);
+		BackRDrive->EnableCurrentLimit(true);
+		BackLDrive->EnableCurrentLimit(true);
 
 
 		//PID BTW
-		FrontR->Config_kP(0, RightP, 0);
-		FrontR->Config_kI(0, RightI, 0);
-		FrontR->Config_kD(0, RightD, 0);
-		FrontL->Config_kP(0, LeftP, 0);
-		FrontL->Config_kI(0, LeftI, 0);
-		FrontL->Config_kD(0, LeftD, 0);
+		/*FrontRDrive->Config_kP(0, RightP, 0);
+		FrontRDrive->Config_kI(0, RightI, 0);
+		FrontRDrive->Config_kD(0, RightD, 0);
+		FrontLDrive->Config_kP(0, LeftP, 0);
+		FrontLDrive->Config_kI(0, LeftI, 0);
+		FrontLDrive->Config_kD(0, LeftD, 0);
+		*/
+		FrontRDrive->ConfigNominalOutputForward(NominalOutput, 0);
+		FrontRDrive->ConfigNominalOutputReverse(-NominalOutput, 0);
+		FrontLDrive->ConfigNominalOutputForward(NominalOutput, 0);
+		FrontLDrive->ConfigNominalOutputReverse(-NominalOutput, 0);
 
-		FrontR->ConfigNominalOutputForward(NominalOutput, 0);
-		FrontR->ConfigNominalOutputReverse(-NominalOutput, 0);
-		FrontL->ConfigNominalOutputForward(NominalOutput, 0);
-		FrontL->ConfigNominalOutputReverse(-NominalOutput, 0);
-
-		FrontR->SetSensorPhase(false);
-		FrontL->SetSensorPhase(false);
+		FrontRDrive->SetSensorPhase(false);
+		FrontLDrive->SetSensorPhase(false);
 
 
-		FrontR->ConfigPeakOutputForward(MaxOutput, 0);
-		FrontR->ConfigPeakOutputReverse(-MaxOutput, 0);
-		FrontL->ConfigPeakOutputForward(MaxOutput, 0);
-		FrontL->ConfigPeakOutputReverse(-MaxOutput, 0);
+		FrontRDrive->ConfigPeakOutputForward(MaxOutput, 0);
+		FrontRDrive->ConfigPeakOutputReverse(-MaxOutput, 0);
+		FrontLDrive->ConfigPeakOutputForward(MaxOutput, 0);
+		FrontLDrive->ConfigPeakOutputReverse(-MaxOutput, 0);
 
-		FrontR->ConfigNeutralDeadband(PIDDeadband, 0);
-		FrontL->ConfigNeutralDeadband(PIDDeadband, 0);
+		FrontRDrive->ConfigNeutralDeadband(PIDDeadband, 0);
+		FrontLDrive->ConfigNeutralDeadband(PIDDeadband, 0);
 
-		FrontR->SetSelectedSensorPosition(0,0,0);
-		FrontL->SetSelectedSensorPosition(0,0,0);
+		FrontRDrive->SetSelectedSensorPosition(0,0,0);
+		FrontLDrive->SetSelectedSensorPosition(0,0,0);
 
-		_diffDrive->SetSafetyEnabled(false);
 
-		BackL->SetSafetyEnabled(false);
-		BackR->SetSafetyEnabled(false);
-		_diffDrive->SetExpiration(.5);
+		BackLDrive->SetSafetyEnabled(false);
+		BackRDrive->SetSafetyEnabled(false);
 
-		BackL->Set(ctre::phoenix::motorcontrol::ControlMode::Follower, frontLeftDrive);
-		BackR->Set(ctre::phoenix::motorcontrol::ControlMode::Follower, frontRightDrive);
+
+		BackLDrive->Set(ctre::phoenix::motorcontrol::ControlMode::Follower, FrontLDrive);
+		BackRDrive->Set(ctre::phoenix::motorcontrol::ControlMode::Follower, FrontRDrive);
 		printf("Done setting up motor \n");
 
 		
-}
+}/*
 void DriveBase::ArcadeDrive(double xAxis, double yAxis) {
   	double parsedLeft;
 	double parsedRight;
@@ -159,6 +165,7 @@ minY	|/
 	   	0.0 	 1.0
 
 	*/
+/*
 	if (yAxis > 0) {
 		yAxis = ySlope * yAxis + minY;
 		XSC = xSlope * yAxis + 1.0;
@@ -192,14 +199,13 @@ minY	|/
 			parsedRight = parsedY + parsedX;
 	}
 	_diffDrive->TankDrive(-parsedLeft, parsedRight, false);
-
-}
+}*/
 void DriveBase::RampSwitch(bool rampOn) {
 	double ramp = (rampOn)?RampTime:0;
-	FrontL->ConfigOpenloopRamp(ramp, 0);
-    FrontR->ConfigOpenloopRamp(ramp, 0);
-   	BackL->ConfigOpenloopRamp(ramp, 0);
-    BackR->ConfigOpenloopRamp(ramp, 0);
+	FrontLDrive->ConfigOpenloopRamp(ramp, 0);
+    FrontRDrive->ConfigOpenloopRamp(ramp, 0);
+   	BackLDrive->ConfigOpenloopRamp(ramp, 0);
+    BackRDrive->ConfigOpenloopRamp(ramp, 0);
 
 }
 void DriveBase::InitDefaultCommand() {
