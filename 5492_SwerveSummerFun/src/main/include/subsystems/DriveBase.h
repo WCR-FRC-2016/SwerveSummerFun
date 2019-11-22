@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #pragma once
+
 #include <frc/commands/Subsystem.h>
 
 class DriveBase : public frc::Subsystem {
@@ -20,7 +21,7 @@ class DriveBase : public frc::Subsystem {
   DriveBase();
   void DriveBaseInit();
   void InitDefaultCommand() override;
-  void ArcadeDrive(double xAxis, double yAxis);
+  void SwerveDrive(double xAxis, double yAxis);
   void RampSwitch(bool rampOn);
   void reverseDrive(bool bButton);
   void slowDrive(bool yButton);

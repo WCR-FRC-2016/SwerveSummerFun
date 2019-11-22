@@ -4,6 +4,8 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
+
+#include "subsystems/DriveBase.h"
 #include "RobotMap.h"
 #include "OI.h"
 #include <subsystems/DriveBase.h>
@@ -29,9 +31,8 @@ WPI_TalonSRX * FrontLTurn;
 WPI_TalonSRX * FrontRTurn;
 WPI_TalonSRX * BackLTurn; 
 WPI_TalonSRX * BackRTurn;
-DriveBase::DriveBase() : Subsystem("DriveBase") {
 
-}
+DriveBase::DriveBase() : Subsystem("DriveBase") {}
 
 void DriveBase::DriveBaseInit() {
 initialized = true;
@@ -111,95 +112,12 @@ initialized = true;
 		BackRDrive->SetSafetyEnabled(false);
 
 
-		BackLDrive->Set(ctre::phoenix::motorcontrol::ControlMode::Follower, FrontLDrive);
-		BackRDrive->Set(ctre::phoenix::motorcontrol::ControlMode::Follower, FrontRDrive);
+		BackLDrive->Follow(*FrontLDrive);
+		BackRDrive->Follow(*FrontRDrive);
 		printf("Done setting up motor \n");
 
 		
-}/*
-void DriveBase::ArcadeDrive(double xAxis, double yAxis) {
-  	double parsedLeft;
-	double parsedRight;
-	double parsedX;
-	double parsedY;
-
-	double power = 2.3;
-
-	//New stuff here for driver improvements.
-	double minX = 0.65;
-	double minY = 0.5;
-	double ySlope = (1-minY)/(1);
-	double xSlope = (minX-1)/(1);
-	double XSC = 0;
-	//Setting inputs to a power
-
-	//YAxis setup to have a minimum value required to drive the Talon when the YAxis is not zero.
-	/*		Yaxis Parsed
-		|  /
-		| /
-minY	|/
-		|
-	--------------------- YAxis Raw
-		|
-	   /| -minY
-	  /	|
-	 /	|
-	*/ 
-	//XAxis scaled to have a maximum value of 1 when the Yaxis is 0 and a minimum value of minX when the Y axis is 1. 
-
-	/*	XSC
-		|
-1.0	    |\
-		| \
-		|  \
-		|   \
-		|    \
-		|     \
-		|      \
-		| 	    \
-    Minx|	     \
-		|	     |\		
-		|	     | \		
-		|	     |  \	
-		----------------YAxis
-	   	0.0 	 1.0
-
-	*/
-/*
-	if (yAxis > 0) {
-		yAxis = ySlope * yAxis + minY;
-		XSC = xSlope * yAxis + 1.0;
-		xAxis = xAxis * XSC;
-	} 
-	else if (yAxis < 0) {
-		yAxis = ySlope * yAxis - minY;
-		XSC = xSlope * -yAxis + 1.0;
-		xAxis = xAxis * XSC;
-	}
- 
-
-
-	parsedX = xAxis *speed; //pow((xAxis>0)?xAxis:-xAxis, power) * (xAxis / (xAxis>0)?xAxis:-xAxis);
-
-	parsedY = pow((yAxis>0)?yAxis:-yAxis, power) * (yAxis / (yAxis>0)?yAxis:-yAxis) * driveConstant * speed;
-
-	if (yAxis < 0)
-	{
-		//TO BE
-		//FILLED IN
-		//Turning Left?
-		
-			parsedLeft = parsedY - parsedX;
-			parsedRight = parsedY + parsedX;
-		
-	}
-	else
-	{
-			parsedLeft = parsedY - parsedX;
-			parsedRight = parsedY + parsedX;
-	}
-	_diffDrive->TankDrive(-parsedLeft, parsedRight, false);
-}*/
+}
 void DriveBase::RampSwitch(bool rampOn) {
 	double ramp = (rampOn)?RampTime:0;
 	FrontLDrive->ConfigOpenloopRamp(ramp, 0);
@@ -216,7 +134,9 @@ void DriveBase::InitDefaultCommand() {
   // Set the default command for a subsystem here.
   // SetDefaultCommand(new MySpecialCommand());
 }
-
+void DriveBase::SwerveDrive(double xAxis, double yAxis){
+  
+}
 void DriveBase::reverseDrive (bool bButton) {
 if (bButton) {
 	driveConstant = driveConstant * -1;

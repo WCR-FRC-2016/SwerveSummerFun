@@ -4,10 +4,9 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-//Alvin - Basically set ports and talon numbers for talons and controllers.
-//Put them here so its all in one place
+
 #pragma once
-//Drive Base
+
 const int frontLeftDrive = 3; //encoder
 const int frontRightDrive = 12; //encoder
 const int backLeftDrive = 2;
@@ -21,7 +20,7 @@ const int backRightTurn = 15;
 const double PIDDeadband = 0.1;
 const double RampTime = 0.00;
 const double NominalOutput = 1.00;
-const double MaxOutput = 0.9
+const double MaxOutput = 0.9;
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking

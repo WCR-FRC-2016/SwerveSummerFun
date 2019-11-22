@@ -13,7 +13,6 @@
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
 #include <networktables/NetworkTableInstance.h>
-#include <frc/WPILib.h>
 
 #include "RobotMap.h"
 #include <vector>

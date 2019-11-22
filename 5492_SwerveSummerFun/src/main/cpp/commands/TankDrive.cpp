@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <commands/TankDrive.h>
+#include "commands/TankDrive.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 #include "Robot.h"
 #include "RobotMap.h"
@@ -13,6 +13,7 @@
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
 #include <networktables/NetworkTableInstance.h>
+
 TankDrive::TankDrive() {
   // Use Requires() here to declare subsystem dependencies
   // eg. Requires(Robot::chassis.get());
@@ -28,9 +29,8 @@ void TankDrive::Initialize() {
 void TankDrive::Execute() {
   Robot::m_drivebase.reverseDrive(Robot::m_oi.ReturnDriverBButton());
   Robot::m_drivebase.slowDrive(Robot::m_oi.ReturnDriverYButton());
-    Robot::m_drivebase.RampSwitch(true);
-    Robot::m_drivebase.ArcadeDrive(Robot::m_oi.ReturnDriverXAxis(), -Robot::m_oi.ReturnDriverYAxis());
-  
+  Robot::m_drivebase.RampSwitch(true);
+  Robot::m_drivebase.SwerveDrive(Robot::m_oi.ReturnDriverXAxis(), -Robot::m_oi.ReturnDriverYAxis());
 }
 
 // Make this return true when this Command no longer needs to run execute()
