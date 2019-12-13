@@ -17,10 +17,30 @@ const int frontRightTurn = 14; //encoder
 const int backLeftTurn = 1;
 const int backRightTurn = 15;
 
+const double RobotLength = 18; //FIXME: Put correct value
+const double RobotWidth = 12; //FIXME: Put correct value
+
 const double PIDDeadband = 0.1;
 const double RampTime = 0.00;
 const double NominalOutput = 1.00;
 const double MaxOutput = 0.9;
+
+const double FrontRP=0;//FIXME: Put correct value
+const double FrontRI=0;//FIXME: Put correct value
+const double FrontRD=0;//FIXME: Put correct value
+
+const double FrontLP=0;//FIXME: Put correct value
+const double FrontLI=0;//FIXME: Put correct value
+const double FrontLD=0;//FIXME: Put correct value
+
+const double BackRP=0;//FIXME: Put correct value
+const double BackRI=0;//FIXME: Put correct value
+const double BackRD=0;//FIXME: Put correct value
+
+const double BackLP=0;//FIXME: Put correct value
+const double BackLI=0;//FIXME: Put correct value
+const double BackLD=0;//FIXME: Put correct value
+
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking

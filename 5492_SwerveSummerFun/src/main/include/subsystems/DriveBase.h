@@ -21,7 +21,7 @@ class DriveBase : public frc::Subsystem {
   DriveBase();
   void DriveBaseInit();
   void InitDefaultCommand() override;
-  void SwerveDrive(double xAxis, double yAxis);
+  void SwerveDrive(double StrafeXAxis, double StrafeYAxis, double TurnXAxis);
   void RampSwitch(bool rampOn);
   void reverseDrive(bool bButton);
   void slowDrive(bool yButton);

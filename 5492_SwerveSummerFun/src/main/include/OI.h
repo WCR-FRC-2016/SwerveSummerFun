@@ -14,8 +14,9 @@
 class OI {
  public:
   OI(); 
-	double ReturnDriverXAxis();
-	double ReturnDriverYAxis();
+	double ReturnDriverStrafeXAxis();
+	double ReturnDriverStrafeYAxis();
+	double ReturnDriverTurnXAxis();
 	bool ReturnDriverRightBumper();
 	bool ReturnDriverLeftBumper();
 	bool ReturnDriverAButton();

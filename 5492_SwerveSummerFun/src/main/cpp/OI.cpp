@@ -72,14 +72,17 @@ bool OI::ReturnDriverBButton() {
 bool OI::ReturnDriverYButton(){
 	return _driverStick->GetYButtonPressed();
 }
-double OI::ReturnDriverXAxis(){
+double OI::ReturnDriverStrafeXAxis(){
 	return DeadBand(_driverStick->GetX(frc::GenericHID::kRightHand));
 
 }
 bool OI::ReturnManualRightBumper(){
 	return _manualStick->GetBumper(frc::GenericHID::kRightHand);
 }
-double OI::ReturnDriverYAxis(){
+double OI::ReturnDriverStrafeYAxis(){
+	return DeadBand(_driverStick->GetY(frc::GenericHID::kRightHand));
+}
+double OI::ReturnDriverTurnXAxis(){
 	return DeadBand(_driverStick->GetY(frc::GenericHID::kLeftHand));
 }
 

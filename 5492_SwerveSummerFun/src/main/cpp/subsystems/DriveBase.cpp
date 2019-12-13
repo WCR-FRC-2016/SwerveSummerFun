@@ -70,8 +70,11 @@ initialized = true;
    		BackLDrive->ConfigOpenloopRamp(RampTime, 0);
     	BackRDrive->ConfigOpenloopRamp(RampTime, 0);
 
-		FrontRDrive->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
-		FrontLDrive->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 0);
+		//TODO: Need to understand feedback of turn motors. 
+		FrontLTurn->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, 0);
+		FrontRTurn->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, 0);
+		BackLTurn->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, 0);
+		BackRTurn->ConfigSelectedFeedbackSensor(FeedbackDevice::QuadEncoder, 0, 0);
 
 		FrontRDrive->EnableCurrentLimit(true);
 		FrontLDrive->EnableCurrentLimit(true);
@@ -79,14 +82,24 @@ initialized = true;
 		BackLDrive->EnableCurrentLimit(true);
 
 
-		//PID BTW
-		/*FrontRDrive->Config_kP(0, RightP, 0);
-		FrontRDrive->Config_kI(0, RightI, 0);
-		FrontRDrive->Config_kD(0, RightD, 0);
-		FrontLDrive->Config_kP(0, LeftP, 0);
-		FrontLDrive->Config_kI(0, LeftI, 0);
-		FrontLDrive->Config_kD(0, LeftD, 0);
-		*/
+		//PID 
+		//TODO: Need to update
+		FrontRTurn->Config_kP(0, FrontRP, 0);
+		FrontRTurn->Config_kI(0, FrontRI, 0);
+		FrontRTurn->Config_kD(0, FrontRD, 0);
+
+		FrontLTurn->Config_kP(0, FrontLP, 0);
+		FrontLTurn->Config_kI(0, FrontLI, 0);
+		FrontLTurn->Config_kD(0, FrontLD, 0);
+		
+		BackRTurn->Config_kP(0, BackRP, 0);
+		BackRTurn->Config_kI(0, BackRI, 0);
+		BackRTurn->Config_kD(0, BackRD, 0);
+
+		BackLTurn->Config_kP(0, BackLP, 0);
+		BackLTurn->Config_kI(0, BackLI, 0);
+		BackLTurn->Config_kD(0, BackLD, 0);
+
 		FrontRDrive->ConfigNominalOutputForward(NominalOutput, 0);
 		FrontRDrive->ConfigNominalOutputReverse(-NominalOutput, 0);
 		FrontLDrive->ConfigNominalOutputForward(NominalOutput, 0);
@@ -107,16 +120,8 @@ initialized = true;
 		FrontRDrive->SetSelectedSensorPosition(0,0,0);
 		FrontLDrive->SetSelectedSensorPosition(0,0,0);
 
-
-		BackLDrive->SetSafetyEnabled(false);
-		BackRDrive->SetSafetyEnabled(false);
-
-
-		BackLDrive->Follow(*FrontLDrive);
-		BackRDrive->Follow(*FrontRDrive);
 		printf("Done setting up motor \n");
-
-		
+	
 }
 void DriveBase::RampSwitch(bool rampOn) {
 	double ramp = (rampOn)?RampTime:0;
@@ -134,8 +139,34 @@ void DriveBase::InitDefaultCommand() {
   // Set the default command for a subsystem here.
   // SetDefaultCommand(new MySpecialCommand());
 }
-void DriveBase::SwerveDrive(double xAxis, double yAxis){
-  //TODO: Code goes here
+void DriveBase::SwerveDrive(double StrafeXAxis, double StrafeYAxis, double TurnXAxis){
+  double R = sqrt((RobotLength * RobotLength) + (RobotWidth * RobotWidth));
+  StrafeYAxis = StrafeYAxis * -1;
+  double a = StrafeXAxis - TurnXAxis * (RobotLength / R);
+  double b = StrafeXAxis + TurnXAxis * (RobotLength / R);
+  double c = StrafeYAxis - TurnXAxis * (RobotWidth / R);
+  double d = StrafeYAxis + TurnXAxis * (RobotWidth / R);
+
+
+  double backRightSpeed = sqrt ((a * a) + (d * d));
+  double backLeftSpeed = sqrt ((a * a) + (c * c));
+  double frontRightSpeed = sqrt ((b * b) + (d * d));
+  double frontLeftSpeed = sqrt ((b * b) + (c * c));
+
+  double backRightAngle = atan2 (a, d) / M_PI;
+  double backLeftAngle = atan2 (a, c) / M_PI;
+  double frontRightAngle = atan2 (b, d) / M_PI;
+  double frontLeftAngle = atan2 (b, c) / M_PI;
+
+  FrontRDrive->Set(frontRightSpeed);
+  FrontLDrive->Set(frontLeftSpeed);
+  BackRDrive->Set(backLeftDrive);
+  BackLDrive->Set(backLeftSpeed);
+
+  FrontRTurn->Set(frontRightAngle);
+  FrontLTurn->Set(frontLeftAngle);
+  BackRTurn->Set(backLeftAngle);
+  BackLTurn->Set(backLeftAngle);
 }
 void DriveBase::reverseDrive (bool bButton) {
 if (bButton) {
